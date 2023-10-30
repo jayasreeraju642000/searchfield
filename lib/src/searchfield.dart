@@ -329,8 +329,8 @@ class _SearchFieldState<T> extends State<SearchField<T>> {
     if (widget.focusNode == null) {
       _focus!.dispose();
     }
-    if (_overlayEntry != null && _overlayEntry!.mounted) {
-      _overlayEntry?.remove();
+    if (overlayEntry != null && overlayEntry!.mounted) {
+      overlayEntry?.remove();
     }
     super.dispose();
   }
@@ -354,7 +354,7 @@ class _SearchFieldState<T> extends State<SearchField<T>> {
         });
       }
       if (isSuggestionExpanded) {
-        _overlayEntry = _createOverlay();
+        overlayEntry = _createOverlay();
         if (widget.initialValue == null) {
           if (widget.suggestionState == Suggestion.expand) {
             Future.delayed(Duration(milliseconds: 100), () {
@@ -362,16 +362,16 @@ class _SearchFieldState<T> extends State<SearchField<T>> {
             });
           }
         }
-        Overlay.of(context).insert(_overlayEntry!);
+        Overlay.of(context).insert(overlayEntry!);
       } else {
-        if (_overlayEntry != null && _overlayEntry!.mounted) {
-          _overlayEntry?.remove();
+        if (overlayEntry != null && overlayEntry!.mounted) {
+          overlayEntry?.remove();
         }
       }
     });
   }
 
-  OverlayEntry? _overlayEntry;
+  OverlayEntry? overlayEntry;
   @override
   void initState() {
     super.initState();
@@ -379,7 +379,7 @@ class _SearchFieldState<T> extends State<SearchField<T>> {
     initialize();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        _overlayEntry = _createOverlay();
+        overlayEntry = _createOverlay();
         if (widget.initialValue == null ||
             widget.initialValue!.searchKey.isEmpty) {
           suggestionStream.sink.add(null);
