@@ -329,10 +329,16 @@ class _SearchFieldState<T> extends State<SearchField<T>> {
     if (widget.focusNode == null) {
       _focus!.dispose();
     }
-    if (overlayEntry != null && overlayEntry!.mounted) {
-      overlayEntry?.remove();
+    if (_overlayEntry != null && _overlayEntry!.mounted) {
+      _overlayEntry?.remove();
     }
     super.dispose();
+  }
+
+  void removeOverlay() {
+    if (_overlayEntry != null && _overlayEntry!.mounted) {
+      _overlayEntry?.remove();
+    }
   }
 
   void initialize() {
@@ -354,7 +360,7 @@ class _SearchFieldState<T> extends State<SearchField<T>> {
         });
       }
       if (isSuggestionExpanded) {
-        overlayEntry = _createOverlay();
+        _overlayEntry = _createOverlay();
         if (widget.initialValue == null) {
           if (widget.suggestionState == Suggestion.expand) {
             Future.delayed(Duration(milliseconds: 100), () {
@@ -362,16 +368,16 @@ class _SearchFieldState<T> extends State<SearchField<T>> {
             });
           }
         }
-        Overlay.of(context).insert(overlayEntry!);
+        Overlay.of(context).insert(_overlayEntry!);
       } else {
-        if (overlayEntry != null && overlayEntry!.mounted) {
-          overlayEntry?.remove();
+        if (_overlayEntry != null && _overlayEntry!.mounted) {
+          _overlayEntry?.remove();
         }
       }
     });
   }
 
-  OverlayEntry? overlayEntry;
+  OverlayEntry? _overlayEntry;
   @override
   void initState() {
     super.initState();
@@ -379,7 +385,7 @@ class _SearchFieldState<T> extends State<SearchField<T>> {
     initialize();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        overlayEntry = _createOverlay();
+        _overlayEntry = _createOverlay();
         if (widget.initialValue == null ||
             widget.initialValue!.searchKey.isEmpty) {
           suggestionStream.sink.add(null);
@@ -472,12 +478,17 @@ class _SearchFieldState<T> extends State<SearchField<T>> {
                     _focus!.unfocus();
                   }
                 }
-
+               
                 // hide the suggestions
                 suggestionStream.sink.add(null);
                 if (widget.onSuggestionTap != null) {
                   widget.onSuggestionTap!(snapshot.data![index]!);
+                   if (_overlayEntry != null && _overlayEntry!.mounted) {
+                  _overlayEntry?.remove();
                 }
+                }
+
+
               },
               child: Container(
                 height: widget.itemHeight,

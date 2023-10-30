@@ -82,6 +82,7 @@ class _SearchFieldSampleState extends State<SearchFieldSample> {
             //   trackColor: Colors.blue,
             //   trackRadius: const Radius.circular(10),
             // ),
+            
             searchInputDecoration:
                 InputDecoration(hintStyle: TextStyle(color: Colors.red)),
             suggestionsDecoration: SuggestionDecoration(
