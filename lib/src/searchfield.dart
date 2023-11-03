@@ -266,7 +266,7 @@ class SearchField<T> extends StatefulWidget {
 
   /// text capitalization defaults to [TextCapitalization.none]
   final TextCapitalization textCapitalization;
-  OverlayEntry? overlayEntry;
+
   SearchField(
       {Key? key,
       required this.suggestions,
@@ -300,7 +300,6 @@ class SearchField<T> extends StatefulWidget {
       this.textCapitalization = TextCapitalization.none,
       this.textInputAction,
       this.validator,
-      this.overlayEntry,
       @Deprecated('use `onSearchTextChanged` instead.') this.comparator})
       : assert(
             (initialValue != null &&
@@ -320,7 +319,6 @@ class _SearchFieldState<T> extends State<SearchField<T>> {
   bool isSuggestionExpanded = false;
   TextEditingController? searchController;
   ScrollbarDecoration? _scrollbarDecoration;
-
   @override
   void dispose() {
     suggestionStream.close();
@@ -331,15 +329,15 @@ class _SearchFieldState<T> extends State<SearchField<T>> {
     if (widget.focusNode == null) {
       _focus!.dispose();
     }
-    if (widget.overlayEntry != null && widget.overlayEntry!.mounted) {
-      widget.overlayEntry?.remove();
+    if (overlayEntry != null && overlayEntry!.mounted) {
+      overlayEntry?.remove();
     }
     super.dispose();
   }
 
   void removeOverlay() {
-    if (widget.overlayEntry != null && widget.overlayEntry!.mounted) {
-      widget.overlayEntry?.remove();
+    if (overlayEntry != null && overlayEntry!.mounted) {
+      overlayEntry?.remove();
     }
   }
 
@@ -362,7 +360,7 @@ class _SearchFieldState<T> extends State<SearchField<T>> {
         });
       }
       if (isSuggestionExpanded) {
-        widget.overlayEntry = _createOverlay();
+        overlayEntry = _createOverlay();
         if (widget.initialValue == null) {
           if (widget.suggestionState == Suggestion.expand) {
             Future.delayed(Duration(milliseconds: 100), () {
@@ -370,15 +368,16 @@ class _SearchFieldState<T> extends State<SearchField<T>> {
             });
           }
         }
-        Overlay.of(context).insert(widget.overlayEntry!);
+        Overlay.of(context).insert(overlayEntry!);
       } else {
-        if (widget.overlayEntry != null && widget.overlayEntry!.mounted) {
-          widget.overlayEntry?.remove();
+        if (overlayEntry != null && overlayEntry!.mounted) {
+          overlayEntry?.remove();
         }
       }
     });
   }
 
+  OverlayEntry? overlayEntry;
   @override
   void initState() {
     super.initState();
@@ -386,7 +385,7 @@ class _SearchFieldState<T> extends State<SearchField<T>> {
     initialize();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        widget.overlayEntry = _createOverlay();
+        overlayEntry = _createOverlay();
         if (widget.initialValue == null ||
             widget.initialValue!.searchKey.isEmpty) {
           suggestionStream.sink.add(null);
@@ -484,13 +483,12 @@ class _SearchFieldState<T> extends State<SearchField<T>> {
                 suggestionStream.sink.add(null);
                 if (widget.onSuggestionTap != null) {
                   widget.onSuggestionTap!(snapshot.data![index]!);
-                  if (widget.overlayEntry != null &&
-                      widget.overlayEntry!.mounted) {
-                    widget.overlayEntry?.remove();
+                  if (overlayEntry != null && overlayEntry!.mounted) {
+                    overlayEntry?.remove();
                   }
                 }
 
-                widget.overlayEntry?.remove();
+                overlayEntry?.remove();
               },
               child: Container(
                 height: widget.itemHeight,
