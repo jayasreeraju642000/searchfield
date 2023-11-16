@@ -179,6 +179,7 @@ class SearchField<T> extends StatefulWidget {
   /// )
   /// ```
   final BoxDecoration? suggestionItemDecoration;
+  final double? suggestionItemWidth;
 
   /// Specifies height for each suggestion item in the list.
   ///
@@ -300,6 +301,7 @@ class SearchField<T> extends StatefulWidget {
       this.textCapitalization = TextCapitalization.none,
       this.textInputAction,
       this.validator,
+      this.suggestionItemWidth,
       @Deprecated('use `onSearchTextChanged` instead.') this.comparator})
       : assert(
             (initialValue != null &&
@@ -487,13 +489,13 @@ class _SearchFieldState<T> extends State<SearchField<T>> {
                     _overlayEntry?.remove();
                   }
                 }
-                    _focus!.unfocus();
+                _focus!.unfocus();
 
                 _overlayEntry?.remove();
               },
               child: Container(
                 height: widget.itemHeight,
-                width: double.infinity,
+                width: widget.suggestionItemWidth ?? double.infinity,
                 alignment: Alignment.centerLeft,
                 decoration: widget.suggestionItemDecoration?.copyWith(
                       border: widget.suggestionItemDecoration?.border ??
@@ -632,7 +634,7 @@ class _SearchFieldState<T> extends State<SearchField<T>> {
               yOffset = getYOffset(offset, textFieldsize, count) ?? Offset.zero;
               return Positioned(
                 left: offset.dx,
-                width: textFieldsize.width,
+                width:widget.suggestionItemWidth?? textFieldsize.width,
                 child: CompositedTransformFollower(
                     offset: widget.offset ?? yOffset,
                     link: _layerLink,
